@@ -1,5 +1,8 @@
 import { getUser } from "@/libs/getUser";
 import { Table } from "antd";
+import { getServerSession } from "next-auth";
+import { GET } from "./api/auth/[...nextauth]/route";
+import { redirect } from "next/navigation";
 
 const dataSource = [
   {
@@ -41,6 +44,14 @@ const columns = [
 
 export default async function Home() {
    const {getAllUser} = await getUser()
+   const session = (await getServerSession(GET)) as {
+    user: {
+      name: string;
+      email: string;
+      image?: string;
+    };
+  };
+  if(!session) return redirect('/login-page')
   return (
     <main className="flex justify-center flex-col items-center gap-y-5">
       <h1 className="text-3xl font-bold pt-5">BIJOY24 Table</h1>
